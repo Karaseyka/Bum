@@ -7,6 +7,7 @@ import math
 import pygame
 
 pygame.init()
+pygame.font.init()
 size = width, height = 500, 500
 screen = pygame.display.set_mode(size)
 clock = pygame.time.Clock()
@@ -53,7 +54,7 @@ def start_screen():
     screen.blit(fon, (0, 0))
     font = pygame.font.Font(None, 30)
     text_coord = 50
-    # Идем по тексту, для каждой буквы применяем свойство
+    # Идем по тексту, для каждой строки применяем свойство
     for line in intro_text:
         string_rendered = font.render(line, 1, pygame.Color('white'))
         intro_rect = string_rendered.get_rect()
@@ -146,12 +147,16 @@ lavel = load_level("1.txt")
 # Замеряем размеры карты для того, чтобы изменить размер экрана
 size = width, height = len(lavel[0]) * 50, len(lavel) * 50
 player, level_x, level_y = generate_level(lavel)
+
 for i in lavel:
     print(i)
 running = True
 pygame.mouse.set_visible(False)
 # Изменяем размер экрана под размер карты
 pygame.display.set_mode(size)
+my_font = pygame.font.Font(None, 30)
+text_surface = my_font.render('ASDJASFLHSAJFHAKJSFHKAJSHFJKAHSF', 1, pygame.Color("white"))
+screen.blit(text_surface, (100, 100))
 
 while running:
     for event in pygame.event.get():
@@ -174,7 +179,7 @@ while running:
             elif event.key == pygame.K_DOWN and player.rect.y // 50 + 1 < len(lavel) and\
                     lavel[player.rect.y // 50 + 1][player.rect.x // 50] != "#":
                 player.rect.y += 50
-    screen.fill(pygame.Color("white "))
+    # screen.fill(pygame.Color("white"))
     all_sprites.draw(screen)
     tiles_group.draw(screen)
     player_group.draw(screen)
