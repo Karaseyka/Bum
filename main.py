@@ -2,6 +2,7 @@ import os
 
 import random
 import sys
+import math
 
 import pygame
 
@@ -65,17 +66,20 @@ def load_level(filename):
     filename = "data/" + filename
     # читаем уровень, убирая символы перевода строки
     with open(filename, 'r') as mapFile:
-        level_map = [line.strip() for line in mapFile]
-
+        level_map = [list(line.strip()) for line in mapFile]
+    # for i in level_map:
+    #     print(i)
     # и подсчитываем максимальную длину
     max_width = max(map(len, level_map))
 
     # дополняем каждую строку пустыми клетками ('.')
-    return list(map(lambda x: x.ljust(max_width, '.'), level_map))
+    # return list(map(lambda x: x.ljust(max_width, '.'), level_map))
+    return level_map
 
 
 print(load_level("1.txt"))
 tile_images = {
+    'bottle': load_image('bottle.png'),
     'wall': load_image('box.png'),
     'empty': load_image('grass.png')
 }
@@ -96,6 +100,7 @@ class Player(pygame.sprite.Sprite):
     def __init__(self, pos_x, pos_y):
         super().__init__(player_group, all_sprites)
         self.rotate = False
+        self.points = 0
         self.image = player_image
         self.rect = self.image.get_rect().move(
             tile_width * pos_x, tile_height * pos_y)
@@ -112,21 +117,30 @@ player_group = pygame.sprite.Group()
 
 def generate_level(level):
     new_player, x, y = None, None, None
+    amount_of_bottles = int(math.sqrt(len(level) * len(level[0])))
     for y in range(len(level)):
         for x in range(len(level[y])):
             if level[y][x] == '.':
-                Tile('empty', x, y)
+                if amount_of_bottles and random.randint(0, amount_of_bottles) == 1:
+                    Tile('empty', x, y)
+                    Tile('bottle', x, y)
+                    level[y][x] = 'b'
+                    amount_of_bottles -= 1
+                else:
+                    Tile('empty', x, y)
             elif level[y][x] == '#':
                 Tile('wall', x, y)
             elif level[y][x] == '@':
                 Tile('empty', x, y)
                 new_player = Player(x, y)
     # вернем игрока, а также размер поля в клетках
+    print(x, y)
     return new_player, x, y
 
-
-player, level_x, level_y = generate_level(load_level('1.txt'))
 lavel = load_level("1.txt")
+player, level_x, level_y = generate_level(lavel)
+for i in lavel:
+    print(i)
 running = True
 pygame.mouse.set_visible(False)
 while running:
