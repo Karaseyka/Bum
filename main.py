@@ -152,12 +152,14 @@ running = True
 pygame.mouse.set_visible(False)
 # Изменяем размер экрана под размер карты
 pygame.display.set_mode(size)
+
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_LEFT and player.rect.x // 50 and lavel[player.rect.y // 50][player.rect.x // 50 - 1] != "#":
+            if event.key == pygame.K_LEFT and player.rect.x // 50 and\
+                    lavel[player.rect.y // 50][player.rect.x // 50 - 1] != "#":
                 player.image = pygame.transform.flip(player.image, not player.rotate, False)
                 player.rotate = True
                 player.rect.x -= 50
@@ -179,4 +181,10 @@ while running:
     all_sprites.update()
     pygame.display.flip()
     clock.tick(10)
-    print(player.rect.x // 50)
+    if lavel[player.rect.y // 50][player.rect.x // 50] == "b":
+        lavel[player.rect.y // 50][player.rect.x // 50] = '.'
+        Tile('empty', player.rect.x // 50, player.rect.y // 50)
+        player.points += 1
+        print(player.points)
+        # for i in lavel:
+        #     print(i)
