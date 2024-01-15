@@ -12,6 +12,7 @@ size = width, height = 500, 500
 screen = pygame.display.set_mode(size)
 clock = pygame.time.Clock()
 
+
 def load_level(filename):
     filename = "data/" + filename
     # читаем уровень, убирая символы перевода строки
@@ -25,6 +26,7 @@ def load_level(filename):
     # дополняем каждую строку пустыми клетками ('.')
     # return list(map(lambda x: x.ljust(max_width, '.'), level_map))
     return level_map
+
 
 def load_image(name):
     fullname = os.path.join('data', name)
@@ -78,8 +80,6 @@ def start_screen():
 
 start_screen()
 
-
-
 print(load_level("1.txt"))
 # Тут словарь для более удобной генерации карты
 tile_images = {
@@ -118,6 +118,7 @@ all_sprites = pygame.sprite.Group()
 tiles_group = pygame.sprite.Group()
 player_group = pygame.sprite.Group()
 
+
 def generate_level(level):
     # Хз что это
     new_player, x, y = None, None, None
@@ -143,6 +144,7 @@ def generate_level(level):
     print(x, y)
     return new_player, x, y
 
+
 lavel = load_level("1.txt")
 # Замеряем размеры карты для того, чтобы изменить размер экрана
 size = width, height = len(lavel[0]) * 50, len(lavel) * 50
@@ -155,15 +157,15 @@ pygame.mouse.set_visible(False)
 # Изменяем размер экрана под размер карты
 pygame.display.set_mode(size)
 my_font = pygame.font.Font(None, 30)
-text_surface = my_font.render('ASDJASFLHSAJFHAKJSFHKAJSHFJKAHSF', 1, pygame.Color("white"))
-screen.blit(text_surface, (100, 100))
-
+text_surface = my_font.render("Бутылок: " + str(player.points), 1, pygame.Color("white"))
+screen.blit(text_surface, (10, 10))
+font = pygame.font.Font(None, 50)
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_LEFT and player.rect.x // 50 and\
+            if event.key == pygame.K_LEFT and player.rect.x // 50 and \
                     lavel[player.rect.y // 50][player.rect.x // 50 - 1] != "#":
                 player.image = pygame.transform.flip(player.image, not player.rotate, False)
                 player.rotate = True
@@ -173,10 +175,10 @@ while running:
                 player.image = pygame.transform.flip(player.image, player.rotate, False)
                 player.rotate = False
                 player.rect.x += 50
-            elif event.key == pygame.K_UP and player.rect.y // 50 and\
+            elif event.key == pygame.K_UP and player.rect.y // 50 and \
                     lavel[player.rect.y // 50 - 1][player.rect.x // 50] != "#":
                 player.rect.y -= 50
-            elif event.key == pygame.K_DOWN and player.rect.y // 50 + 1 < len(lavel) and\
+            elif event.key == pygame.K_DOWN and player.rect.y // 50 + 1 < len(lavel) and \
                     lavel[player.rect.y // 50 + 1][player.rect.x // 50] != "#":
                 player.rect.y += 50
     # screen.fill(pygame.Color("white"))
@@ -185,11 +187,16 @@ while running:
     player_group.draw(screen)
     all_sprites.update()
     pygame.display.flip()
-    clock.tick(10)
+    # clock.tick(10)
     if lavel[player.rect.y // 50][player.rect.x // 50] == "b":
         lavel[player.rect.y // 50][player.rect.x // 50] = '.'
         Tile('empty', player.rect.x // 50, player.rect.y // 50)
         player.points += 1
-        print(player.points)
-        # for i in lavel:
-        #     print(i)
+        for i in lavel:
+            print(i)
+    text = font.render("Бутылок: " + str(player.points), True,
+                       (10, 50, 183))
+    text.get_rect().x = 0
+    screen.blit(text, (0, 0))
+    pygame.display.flip()
+
