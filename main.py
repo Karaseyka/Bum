@@ -199,4 +199,3 @@ while running:
     text.get_rect().x = 0
     screen.blit(text, (0, 0))
     pygame.display.flip()
-
