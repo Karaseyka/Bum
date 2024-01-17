@@ -1,5 +1,5 @@
 import os
-
+import queue
 import random
 import sys
 import math
@@ -110,6 +110,22 @@ class Player(pygame.sprite.Sprite):
             tile_width * pos_x, tile_height * pos_y)
 
 
+class Gopnic(pygame.sprite.Sprite):
+    def __init__(self, pos_x, pos_y):
+        super().__init__(player_group, all_sprites)
+        self.rotate = False
+
+        self.image = player_image
+        self.rect = self.image.get_rect().move(
+            tile_width * pos_x, tile_height * pos_y)
+
+
+# основной персонаж
+player = None
+
+# группы спрайтов
+
+
 # основной персонаж
 player = None
 
@@ -121,7 +137,7 @@ player_group = pygame.sprite.Group()
 
 def generate_level(level):
     # Хз что это
-    new_player, x, y = None, None, None
+    new_player, new_gopnic, x, y = None, None, None, None
     # Ищем максимальное кол - во бутылок на карте
     amount_of_bottles = int(math.sqrt(len(level) * len(level[0])))
     for y in range(len(level)):
@@ -140,16 +156,76 @@ def generate_level(level):
                 # Ставим персонажа
                 Tile('empty', x, y)
                 new_player = Player(x, y)
+            elif level[y][x] == '*':
+                # Ставим персонажа
+                Tile('empty', x, y)
+                new_gopnic = Gopnic(x, y)
     # вернем игрока, а также размер поля в клетках
     print(x, y)
-    return new_player, x, y
+    return new_player, new_gopnic, x, y
+
+
+def make_sm_list(a):
+    sm = []
+    for i in range(len(a)):
+        for j in range(len(a[i])):
+            d = []
+            if a[i][j] == "." or a[i][j] == "@" or a[i][j] == "*":
+                if i + 1 < len(a) and a[i + 1][j] in ".@":
+                    d.append(len(a[i]) * (i + 1) + j + 1)
+                if i - 1 >= 0 and a[i - 1][j] in ".@":
+                    d.append(len(a[i]) * (i - 1) + j + 1)
+                if j + 1 < len(a[i]) and a[i][j + 1] in "@.":
+                    d.append(len(a[i]) * i + j + 2)
+                if j - 1 >= 0 and a[i][j - 1] in "@.":
+                    d.append(len(a[i]) * i + j)
+                sm.append(d)
+            else:
+                sm.append([])
+    return sm
+
+
+def bfs(start, sm):
+    q = queue.Queue()
+    di[start] = 0
+    q.put(start)
+    while not q.empty():
+        v = q.get()
+        try:
+            for u in sm[v - 1]:
+                if di[u] == 1000000:
+                    di[u] = di[v] + 1
+                    q.put(u)
+                    p[u] = v
+        except Exception:
+            print("dfhsfd", v)
+
+
+def return_way(start, t):
+    f = [t]
+    try:
+        while t != start:
+            print(t)
+            f.append(p[t])
+            t = p[t]
+        f.reverse()
+    except Exception:
+        print(t, f)
+    return f
 
 
 lavel = load_level("1.txt")
+di = [1000000] * (len(lavel) * len(lavel[0]) + 1)
+p = [1000000] * (len(lavel) * len(lavel[0]) + 1)
+sm_lst = make_sm_list(lavel)
 # Замеряем размеры карты для того, чтобы изменить размер экрана
 size = width, height = len(lavel[0]) * 50, len(lavel) * 50
-player, level_x, level_y = generate_level(lavel)
-
+player, gopnic, level_x, level_y = generate_level(lavel)
+bfs(54, sm_lst)
+print("dgfhgjh", p[54])
+print(sm_lst, sm_lst[53])
+# print((gopnic.rect.x // 50) + (gopnic.rect.y // 50) * len(lavel[0]) + 1, (player.rect.x // 50) + (player.rect.y // 50) * len(lavel[0]) + 1, gopnic.rect)
+hodyi = return_way((gopnic.rect.x // 50) + (gopnic.rect.y // 50) * len(lavel[0]) + 1, (player.rect.x // 50) + (player.rect.y // 50) * len(lavel[0]) + 1)
 for i in lavel:
     print(i)
 running = True
@@ -157,9 +233,12 @@ pygame.mouse.set_visible(False)
 # Изменяем размер экрана под размер карты
 pygame.display.set_mode(size)
 my_font = pygame.font.Font(None, 30)
-text_surface = my_font.render("Бутылок: " + str(player.points), 1, pygame.Color("white"))
-screen.blit(text_surface, (10, 10))
+# text_surface = my_font.render("Бутылок: " + str(player.points), 1, pygame.Color("white"))
+# screen.blit(text_surface, (10, 10))
 font = pygame.font.Font(None, 50)
+time_elapsed_since_last_action = 0
+clock = pygame.time.Clock()
+hod = 1
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -181,21 +260,47 @@ while running:
             elif event.key == pygame.K_DOWN and player.rect.y // 50 + 1 < len(lavel) and \
                     lavel[player.rect.y // 50 + 1][player.rect.x // 50] != "#":
                 player.rect.y += 50
+            di = [1000000] * (len(lavel) * len(lavel[0]) + 1)
+            p = [1000000] * (len(lavel) * len(lavel[0]) + 1)
+            bfs(12, sm_lst)
+
+            hodyi = return_way((gopnic.rect.x // 50) + (gopnic.rect.y // 50) * len(lavel[0]) + 1,
+                               (player.rect.x // 50) + (player.rect.y // 50) * len(lavel[0]) + 1)
+            hod = 1
     # screen.fill(pygame.Color("white"))
+    #
+    # clock.tick(10)
+    # if lavel[player.rect.y // 50][player.rect.x // 50] == "b":
+    #     lavel[player.rect.y // 50][player.rect.x // 50] = '.'
+    #     Tile('empty', player.rect.x // 50, player.rect.y // 50)
+    #     player.points += 1
+    #     for i in lavel:
+    #         print(i)
+    # text = font.render("Бутылок: " + str(player.points), True,
+    #                    (10, 50, 183))
+    # text.get_rect().x = 0
+    # screen.blit(text, (0, 0))
+    dt = clock.tick()
+    time_elapsed_since_last_action += dt
+    if time_elapsed_since_last_action > 1500 and hod < len(hodyi):
+        cur = (player.rect.x // 50) + (player.rect.y // 50) * len(lavel[0]) + 1
+        print(cur, (player.rect.x // 50), (player.rect.y // 50))
+        if hodyi[hod] + 12 == cur:
+            player.image = pygame.transform.flip(player.image, not player.rotate, False)
+            player.rect.y -= 50
+        elif hodyi[hod] - 12 == cur:
+            player.image = pygame.transform.flip(player.image, not player.rotate, False)
+            player.rect.y += 50
+        elif hodyi[hod] - 1 == cur:
+            player.image = pygame.transform.flip(player.image, not player.rotate, False)
+            player.rect.x += 50
+        elif hodyi[hod] + 1 == cur:
+            player.image = pygame.transform.flip(player.image, not player.rotate, False)
+            player.rect.x -= 50
+        hod += 1
+        time_elapsed_since_last_action = 0
     all_sprites.draw(screen)
     tiles_group.draw(screen)
     player_group.draw(screen)
     all_sprites.update()
-    pygame.display.flip()
-    # clock.tick(10)
-    if lavel[player.rect.y // 50][player.rect.x // 50] == "b":
-        lavel[player.rect.y // 50][player.rect.x // 50] = '.'
-        Tile('empty', player.rect.x // 50, player.rect.y // 50)
-        player.points += 1
-        for i in lavel:
-            print(i)
-    text = font.render("Бутылок: " + str(player.points), True,
-                       (10, 50, 183))
-    text.get_rect().x = 0
-    screen.blit(text, (0, 0))
     pygame.display.flip()
