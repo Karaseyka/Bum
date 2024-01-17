@@ -171,13 +171,13 @@ def make_sm_list(a):
         for j in range(len(a[i])):
             d = []
             if a[i][j] == "." or a[i][j] == "@" or a[i][j] == "*":
-                if i + 1 < len(a) and a[i + 1][j] in ".@":
+                if i + 1 < len(a) and a[i + 1][j] in ".@*":
                     d.append(len(a[i]) * (i + 1) + j + 1)
-                if i - 1 >= 0 and a[i - 1][j] in ".@":
+                if i - 1 >= 0 and a[i - 1][j] in ".@*":
                     d.append(len(a[i]) * (i - 1) + j + 1)
-                if j + 1 < len(a[i]) and a[i][j + 1] in "@.":
+                if j + 1 < len(a[i]) and a[i][j + 1] in "@.*":
                     d.append(len(a[i]) * i + j + 2)
-                if j - 1 >= 0 and a[i][j - 1] in "@.":
+                if j - 1 >= 0 and a[i][j - 1] in "@.*":
                     d.append(len(a[i]) * i + j)
                 sm.append(d)
             else:
