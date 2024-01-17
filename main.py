@@ -12,7 +12,6 @@ size = width, height = 500, 500
 screen = pygame.display.set_mode(size)
 clock = pygame.time.Clock()
 
-
 def load_level(filename):
     filename = "data/" + filename
     # читаем уровень, убирая символы перевода строки
@@ -275,6 +274,12 @@ while running:
         player.points += 1
         # for i in lavel:
         #     print(i)
+    if gopnic.rect.x // 50 == player.rect.x // 50 and gopnic.rect.y // 50 == player.rect.y // 50:
+        running = False
+        win = False
+    elif player.points == int(math.sqrt(len(lavel) * len(lavel[0]))):
+        running = False
+        win = True
 
     dt = clock.tick()
     time_elapsed_since_last_action += dt
@@ -305,3 +310,42 @@ while running:
     player_group.draw(screen)
     all_sprites.update()
     pygame.display.flip()
+
+size = width, height = 500, 500
+screen = pygame.display.set_mode(size)
+if not win:
+    fon = pygame.transform.scale(load_image('death_screen.png'), (width, height))
+    intro_text = ["Вы проиграли!", "",
+                  "Нажмите, чтобы выйти",
+                  ]
+    screen.blit(fon, (0, 0))
+else:
+    fon = pygame.transform.scale(load_image('win_screen.png'), (width, height))
+    intro_text = ["Вы выиграли!", "",
+                  "Нажмите, чтобы выйти",
+                  ]
+    screen.blit(fon, (0, 0))
+
+font = pygame.font.Font(None, 30)
+text_coord = 50
+# Идем по тексту, для каждой строки применяем свойство
+for line in intro_text:
+    string_rendered = font.render(line, 1, pygame.Color('white'))
+    intro_rect = string_rendered.get_rect()
+    text_coord += 10
+    intro_rect.top = text_coord
+    intro_rect.x = 10
+    text_coord += intro_rect.height
+    screen.blit(string_rendered, intro_rect)
+def wait_for_button():
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                terminate()
+            elif event.type == pygame.KEYDOWN or \
+                    event.type == pygame.MOUSEBUTTONDOWN:
+                return
+        pygame.display.flip()
+        clock.tick(FPS)
+
+wait_for_button()
