@@ -115,7 +115,7 @@ class Gopnic(pygame.sprite.Sprite):
         super().__init__(player_group, all_sprites)
         self.rotate = False
 
-        self.image = player_image
+        self.image = load_image("gop1.png")
         self.rect = self.image.get_rect().move(
             tile_width * pos_x, tile_height * pos_y)
 
@@ -222,13 +222,13 @@ sm_lst = make_sm_list(lavel)
 size = width, height = len(lavel[0]) * 50, len(lavel) * 50
 player, gopnic, level_x, level_y = generate_level(lavel)
 bfs(54, sm_lst)
-print("dgfhgjh", p[54])
-print(sm_lst, sm_lst[53])
+# print("dgfhgjh", p[54])
+# print(sm_lst, sm_lst[53])
 # print((gopnic.rect.x // 50) + (gopnic.rect.y // 50) * len(lavel[0]) + 1, (player.rect.x // 50) + (player.rect.y //
 # 50) * len(lavel[0]) + 1, gopnic.rect)
 hodyi = return_way((gopnic.rect.x // 50) + (gopnic.rect.y // 50) * len(lavel[0]) + 1, (player.rect.x // 50) + (player.rect.y // 50) * len(lavel[0]) + 1)
-for i in lavel:
-    print(i)
+# for i in lavel:
+#     print(i)
 running = True
 pygame.mouse.set_visible(False)
 # Изменяем размер экрана под размер карты
@@ -273,14 +273,14 @@ while running:
         lavel[player.rect.y // 50][player.rect.x // 50] = '.'
         Tile('empty', player.rect.x // 50, player.rect.y // 50)
         player.points += 1
-        for i in lavel:
-            print(i)
+        # for i in lavel:
+        #     print(i)
 
     dt = clock.tick()
     time_elapsed_since_last_action += dt
     if time_elapsed_since_last_action > 250 and hod < len(hodyi):
         cur = (gopnic.rect.x // 50) + (gopnic.rect.y // 50) * len(lavel[0]) + 1
-        print(cur, (gopnic.rect.x // 50), (gopnic.rect.y // 50))
+        # print(cur, (gopnic.rect.x // 50), (gopnic.rect.y // 50))
         if hodyi[hod] + 12 == cur:
             gopnic.image = pygame.transform.flip(gopnic.image, not gopnic.rotate, False)
             gopnic.rect.y -= 50
