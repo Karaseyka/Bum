@@ -224,7 +224,8 @@ player, gopnic, level_x, level_y = generate_level(lavel)
 bfs(54, sm_lst)
 print("dgfhgjh", p[54])
 print(sm_lst, sm_lst[53])
-# print((gopnic.rect.x // 50) + (gopnic.rect.y // 50) * len(lavel[0]) + 1, (player.rect.x // 50) + (player.rect.y // 50) * len(lavel[0]) + 1, gopnic.rect)
+# print((gopnic.rect.x // 50) + (gopnic.rect.y // 50) * len(lavel[0]) + 1, (player.rect.x // 50) + (player.rect.y //
+# 50) * len(lavel[0]) + 1, gopnic.rect)
 hodyi = return_way((gopnic.rect.x // 50) + (gopnic.rect.y // 50) * len(lavel[0]) + 1, (player.rect.x // 50) + (player.rect.y // 50) * len(lavel[0]) + 1)
 for i in lavel:
     print(i)
@@ -233,8 +234,8 @@ pygame.mouse.set_visible(False)
 # Изменяем размер экрана под размер карты
 pygame.display.set_mode(size)
 my_font = pygame.font.Font(None, 30)
-# text_surface = my_font.render("Бутылок: " + str(player.points), 1, pygame.Color("white"))
-# screen.blit(text_surface, (10, 10))
+text_surface = my_font.render("Бутылок: " + str(player.points), 1, pygame.Color("white"))
+screen.blit(text_surface, (10, 10))
 font = pygame.font.Font(None, 50)
 time_elapsed_since_last_action = 0
 clock = pygame.time.Clock()
@@ -262,43 +263,43 @@ while running:
                 player.rect.y += 50
             di = [1000000] * (len(lavel) * len(lavel[0]) + 1)
             p = [1000000] * (len(lavel) * len(lavel[0]) + 1)
-            bfs(12, sm_lst)
+            bfs((gopnic.rect.x // 50) + (gopnic.rect.y // 50) * len(lavel[0]) + 1, sm_lst)
 
             hodyi = return_way((gopnic.rect.x // 50) + (gopnic.rect.y // 50) * len(lavel[0]) + 1,
                                (player.rect.x // 50) + (player.rect.y // 50) * len(lavel[0]) + 1)
             hod = 1
-    # screen.fill(pygame.Color("white"))
-    #
-    # clock.tick(10)
-    # if lavel[player.rect.y // 50][player.rect.x // 50] == "b":
-    #     lavel[player.rect.y // 50][player.rect.x // 50] = '.'
-    #     Tile('empty', player.rect.x // 50, player.rect.y // 50)
-    #     player.points += 1
-    #     for i in lavel:
-    #         print(i)
-    # text = font.render("Бутылок: " + str(player.points), True,
-    #                    (10, 50, 183))
-    # text.get_rect().x = 0
-    # screen.blit(text, (0, 0))
+
+    if lavel[player.rect.y // 50][player.rect.x // 50] == "b":
+        lavel[player.rect.y // 50][player.rect.x // 50] = '.'
+        Tile('empty', player.rect.x // 50, player.rect.y // 50)
+        player.points += 1
+        for i in lavel:
+            print(i)
+
     dt = clock.tick()
     time_elapsed_since_last_action += dt
-    if time_elapsed_since_last_action > 1500 and hod < len(hodyi):
-        cur = (player.rect.x // 50) + (player.rect.y // 50) * len(lavel[0]) + 1
-        print(cur, (player.rect.x // 50), (player.rect.y // 50))
+    if time_elapsed_since_last_action > 250 and hod < len(hodyi):
+        cur = (gopnic.rect.x // 50) + (gopnic.rect.y // 50) * len(lavel[0]) + 1
+        print(cur, (gopnic.rect.x // 50), (gopnic.rect.y // 50))
         if hodyi[hod] + 12 == cur:
-            player.image = pygame.transform.flip(player.image, not player.rotate, False)
-            player.rect.y -= 50
+            gopnic.image = pygame.transform.flip(gopnic.image, not gopnic.rotate, False)
+            gopnic.rect.y -= 50
         elif hodyi[hod] - 12 == cur:
-            player.image = pygame.transform.flip(player.image, not player.rotate, False)
-            player.rect.y += 50
+            gopnic.image = pygame.transform.flip(gopnic.image, not gopnic.rotate, False)
+            gopnic.rect.y += 50
         elif hodyi[hod] - 1 == cur:
-            player.image = pygame.transform.flip(player.image, not player.rotate, False)
-            player.rect.x += 50
+            gopnic.image = pygame.transform.flip(gopnic.image, not gopnic.rotate, False)
+            gopnic.rect.x += 50
         elif hodyi[hod] + 1 == cur:
-            player.image = pygame.transform.flip(player.image, not player.rotate, False)
-            player.rect.x -= 50
+            gopnic.image = pygame.transform.flip(gopnic.image, not gopnic.rotate, False)
+            gopnic.rect.x -= 50
         hod += 1
         time_elapsed_since_last_action = 0
+    text = font.render("Бутылок: " + str(player.points), True,
+                       (10, 50, 183))
+    text.get_rect().x = 0
+    screen.blit(text, (0, 0))
+    pygame.display.flip()
     all_sprites.draw(screen)
     tiles_group.draw(screen)
     player_group.draw(screen)
