@@ -3,6 +3,7 @@ import queue
 import random
 import sys
 import math
+import time
 
 import pygame
 
@@ -11,6 +12,7 @@ pygame.font.init()
 size = width, height = 500, 500
 screen = pygame.display.set_mode(size)
 clock = pygame.time.Clock()
+
 
 def load_level(filename):
     filename = "data/" + filename
@@ -136,6 +138,7 @@ player_group = pygame.sprite.Group()
 
 def generate_level(level):
     # Хз что это
+    am_bottles = 0
     new_player, new_gopnic, x, y = None, None, None, None
     # Ищем максимальное кол - во бутылок на карте
     amount_of_bottles = int(math.sqrt(len(level) * len(level[0])))
@@ -145,6 +148,7 @@ def generate_level(level):
                 # Если на карте должна быть трава, то смотрим, стоит ли ставить туда бутылку
                 Tile('empty', x, y)
                 if amount_of_bottles and random.randint(0, amount_of_bottles) == 1:
+                    am_bottles += 1
                     Tile('bottle', x, y)
                     level[y][x] = 'b'
                     amount_of_bottles -= 1
@@ -161,7 +165,19 @@ def generate_level(level):
                 new_gopnic = Gopnic(x, y)
     # вернем игрока, а также размер поля в клетках
     print(x, y)
-    return new_player, new_gopnic, x, y
+    return new_player, new_gopnic, x, y, am_bottles
+
+
+def wait_for_button():
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                terminate()
+            elif event.type == pygame.KEYDOWN or \
+                    event.type == pygame.MOUSEBUTTONDOWN:
+                return
+        pygame.display.flip()
+        clock.tick(FPS)
 
 
 def make_sm_list(a):
@@ -219,13 +235,14 @@ p = [1000000] * (len(lavel) * len(lavel[0]) + 1)
 sm_lst = make_sm_list(lavel)
 # Замеряем размеры карты для того, чтобы изменить размер экрана
 size = width, height = len(lavel[0]) * 50, len(lavel) * 50
-player, gopnic, level_x, level_y = generate_level(lavel)
+player, gopnic, level_x, level_y, am_bottles = generate_level(lavel)
 bfs(54, sm_lst)
 # print("dgfhgjh", p[54])
 # print(sm_lst, sm_lst[53])
 # print((gopnic.rect.x // 50) + (gopnic.rect.y // 50) * len(lavel[0]) + 1, (player.rect.x // 50) + (player.rect.y //
 # 50) * len(lavel[0]) + 1, gopnic.rect)
-hodyi = return_way((gopnic.rect.x // 50) + (gopnic.rect.y // 50) * len(lavel[0]) + 1, (player.rect.x // 50) + (player.rect.y // 50) * len(lavel[0]) + 1)
+hodyi = return_way((gopnic.rect.x // 50) + (gopnic.rect.y // 50) * len(lavel[0]) + 1,
+                   (player.rect.x // 50) + (player.rect.y // 50) * len(lavel[0]) + 1)
 # for i in lavel:
 #     print(i)
 running = True
@@ -277,7 +294,7 @@ while running:
     if gopnic.rect.x // 50 == player.rect.x // 50 and gopnic.rect.y // 50 == player.rect.y // 50:
         running = False
         win = False
-    elif player.points == int(math.sqrt(len(lavel) * len(lavel[0]))):
+    elif player.points == am_bottles:
         running = False
         win = True
 
@@ -325,7 +342,8 @@ else:
                   "Нажмите, чтобы выйти",
                   ]
     screen.blit(fon, (0, 0))
-
+pygame.display.flip()
+time.sleep(3)
 font = pygame.font.Font(None, 30)
 text_coord = 50
 # Идем по тексту, для каждой строки применяем свойство
@@ -337,15 +355,6 @@ for line in intro_text:
     intro_rect.x = 10
     text_coord += intro_rect.height
     screen.blit(string_rendered, intro_rect)
-def wait_for_button():
-    while True:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                terminate()
-            elif event.type == pygame.KEYDOWN or \
-                    event.type == pygame.MOUSEBUTTONDOWN:
-                return
-        pygame.display.flip()
-        clock.tick(FPS)
+pygame.display.flip()
 
 wait_for_button()
