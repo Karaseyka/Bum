@@ -256,6 +256,7 @@ font = pygame.font.Font(None, 50)
 time_elapsed_since_last_action = 0
 clock = pygame.time.Clock()
 hod = 1
+win = False
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -300,7 +301,7 @@ while running:
 
     dt = clock.tick()
     time_elapsed_since_last_action += dt
-    if time_elapsed_since_last_action > 250 and hod < len(hodyi):
+    if time_elapsed_since_last_action > 200 and hod < len(hodyi):
         cur = (gopnic.rect.x // 50) + (gopnic.rect.y // 50) * len(lavel[0]) + 1
         # print(cur, (gopnic.rect.x // 50), (gopnic.rect.y // 50))
         if hodyi[hod] + 12 == cur:
@@ -326,7 +327,7 @@ while running:
     tiles_group.draw(screen)
     player_group.draw(screen)
     all_sprites.update()
-    pygame.display.flip()
+
 
 size = width, height = 500, 500
 screen = pygame.display.set_mode(size)
