@@ -223,7 +223,6 @@ while True:
         'empty': load_image('grass.png')
     }
     player_image = load_image('mar.png')
-
     tile_width = tile_height = 50
     # основной персонаж
     player = None
@@ -245,7 +244,7 @@ while True:
     # Замеряем размеры карты для того, чтобы изменить размер экрана
     size = width, height = len(lavel[0]) * 50, len(lavel) * 50
     player, gopnic, level_x, level_y, am_bottles = generate_level(lavel)
-    bfs(54, sm_lst)
+    bfs((gopnic.rect.x // 50) + (gopnic.rect.y // 50) * len(lavel[0]) + 1, sm_lst)
     hodyi = return_way((gopnic.rect.x // 50) + (gopnic.rect.y // 50) * len(lavel[0]) + 1,
                        (player.rect.x // 50) + (player.rect.y // 50) * len(lavel[0]) + 1)
     running = True
@@ -260,6 +259,7 @@ while True:
     clock = pygame.time.Clock()
     hod = 1
     win = False
+    print(sm_lst)
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -301,16 +301,15 @@ while True:
         elif player.points == am_bottles:
             running = False
             win = True
-
         dt = clock.tick()
         time_elapsed_since_last_action += dt
         if time_elapsed_since_last_action > 200 and hod < len(hodyi):
             cur = (gopnic.rect.x // 50) + (gopnic.rect.y // 50) * len(lavel[0]) + 1
             # print(cur, (gopnic.rect.x // 50), (gopnic.rect.y // 50))
-            if hodyi[hod] + 12 == cur:
+            if hodyi[hod] + len(lavel[0]) == cur:
                 gopnic.image = pygame.transform.flip(gopnic.image, not gopnic.rotate, False)
                 gopnic.rect.y -= 50
-            elif hodyi[hod] - 12 == cur:
+            elif hodyi[hod] - len(lavel[0]) == cur:
                 gopnic.image = pygame.transform.flip(gopnic.image, not gopnic.rotate, False)
                 gopnic.rect.y += 50
             elif hodyi[hod] - 1 == cur:
