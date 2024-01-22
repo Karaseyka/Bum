@@ -175,7 +175,7 @@ def make_sm_list(a):
                     d.append(len(a[i]) * (i - 1) + j + 1)
                 if j + 1 < len(a[i]) and a[i][j + 1] in "@.*":
                     d.append(len(a[i]) * i + j + 2)
-                if j - 1 >= 0 and a[i][j - 1] in "@.*":
+                if j - 1  >= 0 and a[i][j - 1] in "@.*":
                     d.append(len(a[i]) * i + j)
                 sm.append(d)
             else:
@@ -213,6 +213,7 @@ def return_way(start, t):
 
 
 while True:
+    pygame.mouse.set_visible(True)
     start_screen()
 
     print(load_level("1.txt"))
