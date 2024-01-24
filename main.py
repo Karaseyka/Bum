@@ -372,7 +372,7 @@ while True:
                           ]
             screen.blit(fon, (0, 0))
         pygame.display.flip()
-        time.sleep(3)
+        time.sleep(1)
         font = pygame.font.Font(None, 30)
         text_coord = 50
         # Идем по тексту, для каждой строки применяем свойство
@@ -500,7 +500,7 @@ while True:
                           ]
             screen.blit(fon, (0, 0))
         pygame.display.flip()
-        time.sleep(3)
+        time.sleep(1)
         font = pygame.font.Font(None, 30)
         text_coord = 50
         # Идем по тексту, для каждой строки применяем свойство
@@ -628,7 +628,7 @@ while True:
                           ]
             screen.blit(fon, (0, 0))
         pygame.display.flip()
-        time.sleep(3)
+        time.sleep(1)
         font = pygame.font.Font(None, 30)
         text_coord = 50
         # Идем по тексту, для каждой строки применяем свойство
