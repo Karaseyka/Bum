@@ -4,6 +4,7 @@ import random
 import sys
 import math
 import time
+import threading
 
 import pygame
 
@@ -114,8 +115,23 @@ class Player(pygame.sprite.Sprite):
         self.rotate = False
         self.points = 0
         self.image = player_image
+        self.anim = 0
+        self.count = 0
         self.rect = self.image.get_rect().move(
             tile_width * pos_x, tile_height * pos_y)
+
+    def update(self):
+        global side
+        print(self.anim)
+        if self.anim:
+            self.image = player_image
+            print("First image set")
+        else:
+            self.image = player_image2
+            print("Second Image set")
+        if not side:
+            self.image = pygame.transform.flip(self.image, True, False)
+        self.anim = abs(self.anim - 1)
 
 
 class Gopnic(pygame.sprite.Sprite):
@@ -212,7 +228,7 @@ def return_way(start, t):
     f = [t]
     try:
         while t != start:
-            print(t)
+            print("t:", t)
             f.append(p[t])
             t = p[t]
         f.reverse()
@@ -224,7 +240,7 @@ def return_way(start, t):
 while True:
     pygame.mouse.set_visible(True)
     num_lavel = start_screen()
-
+    count = 0
     # print(load_level("1.txt"))
     # Тут словарь для более удобной генерации карты
     tile_images = {
@@ -233,12 +249,8 @@ while True:
         'empty': load_image('grass.png')
     }
     player_image = load_image('mar.png')
+    player_image2 = load_image('mar2.png')
     tile_width = tile_height = 50
-    # основной персонаж
-    player = None
-
-    # группы спрайтов
-
     # основной персонаж
     player = None
 
@@ -258,6 +270,7 @@ while True:
         hodyi = return_way((gopnic.rect.x // 50) + (gopnic.rect.y // 50) * len(lavel[0]) + 1,
                            (player.rect.x // 50) + (player.rect.y // 50) * len(lavel[0]) + 1)
         running = True
+        side = 1
         pygame.mouse.set_visible(False)
         # Изменяем размер экрана под размер карты
         pygame.display.set_mode(size)
@@ -278,10 +291,12 @@ while True:
                     if event.key == pygame.K_LEFT and player.rect.x // 50 and \
                             lavel[player.rect.y // 50][player.rect.x // 50 - 1] != "#":
                         player.image = pygame.transform.flip(player.image, not player.rotate, False)
+                        side = 0
                         player.rotate = True
                         player.rect.x -= 50
                     elif event.key == pygame.K_RIGHT and player.rect.x // 50 + 1 < len(lavel[0]) and "#" != \
                             lavel[player.rect.y // 50][player.rect.x // 50 + 1]:
+                        side = 1
                         player.image = pygame.transform.flip(player.image, player.rotate, False)
                         player.rotate = False
                         player.rect.x += 50
@@ -338,7 +353,9 @@ while True:
             all_sprites.draw(screen)
             tiles_group.draw(screen)
             player_group.draw(screen)
-            all_sprites.update()
+            count = count + 1 if count <= 100 else 1
+            if count % 15 == 0:
+                all_sprites.update()
 
         size = width, height = 500, 500
         screen = pygame.display.set_mode(size)
@@ -369,7 +386,6 @@ while True:
             screen.blit(string_rendered, intro_rect)
         pygame.display.flip()
         wait_for_button()
-
     elif num_lavel == 2:
         lavel = load_level("12.txt")
         di = [1000000] * (len(lavel) * len(lavel[0]) + 1)
@@ -382,6 +398,7 @@ while True:
         hodyi = return_way((gopnic.rect.x // 50) + (gopnic.rect.y // 50) * len(lavel[0]) + 1,
                            (player.rect.x // 50) + (player.rect.y // 50) * len(lavel[0]) + 1)
         running = True
+        side = 1
         pygame.mouse.set_visible(False)
         # Изменяем размер экрана под размер карты
         pygame.display.set_mode(size)
@@ -402,11 +419,13 @@ while True:
                     if event.key == pygame.K_LEFT and player.rect.x // 50 and \
                             lavel[player.rect.y // 50][player.rect.x // 50 - 1] != "#":
                         player.image = pygame.transform.flip(player.image, not player.rotate, False)
+                        side = 0
                         player.rotate = True
                         player.rect.x -= 50
                     elif event.key == pygame.K_RIGHT and player.rect.x // 50 + 1 < len(lavel[0]) and "#" != \
                             lavel[player.rect.y // 50][player.rect.x // 50 + 1]:
                         player.image = pygame.transform.flip(player.image, player.rotate, False)
+                        side = 1
                         player.rotate = False
                         player.rect.x += 50
                     elif event.key == pygame.K_UP and player.rect.y // 50 and \
@@ -462,7 +481,9 @@ while True:
             all_sprites.draw(screen)
             tiles_group.draw(screen)
             player_group.draw(screen)
-            all_sprites.update()
+            count = count + 1 if count <= 100 else 1
+            if count % 15 == 0:
+                all_sprites.update()
 
         size = width, height = 500, 500
         screen = pygame.display.set_mode(size)
@@ -493,7 +514,6 @@ while True:
             screen.blit(string_rendered, intro_rect)
         pygame.display.flip()
         wait_for_button()
-
     else:
         lavel = load_level("13.txt")
         di = [1000000] * (len(lavel) * len(lavel[0]) + 1)
@@ -506,6 +526,7 @@ while True:
         hodyi = return_way((gopnic.rect.x // 50) + (gopnic.rect.y // 50) * len(lavel[0]) + 1,
                            (player.rect.x // 50) + (player.rect.y // 50) * len(lavel[0]) + 1)
         running = True
+        side = 1
         pygame.mouse.set_visible(False)
         # Изменяем размер экрана под размер карты
         pygame.display.set_mode(size)
@@ -526,11 +547,13 @@ while True:
                     if event.key == pygame.K_LEFT and player.rect.x // 50 and \
                             lavel[player.rect.y // 50][player.rect.x // 50 - 1] != "#":
                         player.image = pygame.transform.flip(player.image, not player.rotate, False)
+                        side = 0
                         player.rotate = True
                         player.rect.x -= 50
                     elif event.key == pygame.K_RIGHT and player.rect.x // 50 + 1 < len(lavel[0]) and "#" != \
                             lavel[player.rect.y // 50][player.rect.x // 50 + 1]:
                         player.image = pygame.transform.flip(player.image, player.rotate, False)
+                        side = 1
                         player.rotate = False
                         player.rect.x += 50
                     elif event.key == pygame.K_UP and player.rect.y // 50 and \
@@ -586,7 +609,9 @@ while True:
             all_sprites.draw(screen)
             tiles_group.draw(screen)
             player_group.draw(screen)
-            all_sprites.update()
+            count = count + 1 if count <= 100 else 1
+            if count % 15 == 0:
+                all_sprites.update()
 
         size = width, height = 500, 500
         screen = pygame.display.set_mode(size)
