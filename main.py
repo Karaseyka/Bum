@@ -15,6 +15,7 @@ screen = pygame.display.set_mode(size)
 clock = pygame.time.Clock()
 
 
+# загружаем уровень
 def load_level(filename):
     filename = "data/" + filename
     # читаем уровень, убирая символы перевода строки
@@ -30,6 +31,7 @@ def load_level(filename):
     return level_map
 
 
+# загружаем картинку
 def load_image(name):
     fullname = os.path.join('data', name)
     # если файл не существует, то выходим
@@ -43,11 +45,13 @@ def load_image(name):
 FPS = 50
 
 
+# выход из приложения
 def terminate():
     pygame.quit()
     sys.exit()
 
 
+# стартовый экран
 def start_screen():
     # Текст
     intro_text = ["            BUM", "",
@@ -101,6 +105,7 @@ def start_screen():
         clock.tick(FPS)
 
 
+# создание плиток
 class Tile(pygame.sprite.Sprite):
     def __init__(self, tile_type, pos_x, pos_y):
         super().__init__(tiles_group, all_sprites)
@@ -109,6 +114,7 @@ class Tile(pygame.sprite.Sprite):
             tile_width * pos_x, tile_height * pos_y)
 
 
+# класс игрока
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos_x, pos_y):
         super().__init__(player_group, all_sprites)
@@ -120,6 +126,7 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect().move(
             tile_width * pos_x, tile_height * pos_y)
 
+    # анимация
     def update(self):
         global side
         print(self.anim)
@@ -134,6 +141,7 @@ class Player(pygame.sprite.Sprite):
         self.anim = abs(self.anim - 1)
 
 
+# создание гопника
 class Gopnic(pygame.sprite.Sprite):
     def __init__(self, pos_x, pos_y):
         super().__init__(player_group, all_sprites)
@@ -144,8 +152,8 @@ class Gopnic(pygame.sprite.Sprite):
             tile_width * pos_x, tile_height * pos_y)
 
 
+# генерация уровня
 def generate_level(level):
-    # Хз что это
     am_bottles = 0
     new_player, new_gopnic, x, y = None, None, None, None
     # Ищем максимальное кол - во бутылок на карте
@@ -176,6 +184,7 @@ def generate_level(level):
     return new_player, new_gopnic, x, y, am_bottles
 
 
+# ждём нажатия кнопки
 def wait_for_button():
     while True:
         for event in pygame.event.get():
@@ -188,6 +197,7 @@ def wait_for_button():
         clock.tick(FPS)
 
 
+# создаём список смежностей графа
 def make_sm_list(a):
     sm = []
     for i in range(len(a)):
@@ -208,6 +218,7 @@ def make_sm_list(a):
     return sm
 
 
+# запускаем обход в глубину dfs
 def bfs(start, sm):
     q = queue.Queue()
     di[start] = 0
@@ -224,6 +235,7 @@ def bfs(start, sm):
             print("dfhsfd", v)
 
 
+# возвращаем востановленный маршрут
 def return_way(start, t):
     f = [t]
     try:
@@ -237,6 +249,7 @@ def return_way(start, t):
     return f
 
 
+# начало игры
 while True:
     pygame.mouse.set_visible(True)
     num_lavel = start_screen()
@@ -282,7 +295,6 @@ while True:
         clock = pygame.time.Clock()
         hod = 1
         win = False
-        print(sm_lst)
         while running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
