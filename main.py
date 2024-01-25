@@ -344,16 +344,16 @@ while True:
                 cur = (gopnic.rect.x // 50) + (gopnic.rect.y // 50) * len(lavel[0]) + 1
                 # print(cur, (gopnic.rect.x // 50), (gopnic.rect.y // 50))
                 if hodyi[hod] + len(lavel[0]) == cur:
-                    gopnic.image = pygame.transform.flip(gopnic.image, not gopnic.rotate, False)
                     gopnic.rect.y -= 50
                 elif hodyi[hod] - len(lavel[0]) == cur:
-                    gopnic.image = pygame.transform.flip(gopnic.image, not gopnic.rotate, False)
                     gopnic.rect.y += 50
                 elif hodyi[hod] - 1 == cur:
-                    gopnic.image = pygame.transform.flip(gopnic.image, not gopnic.rotate, False)
+                    gopnic.image = pygame.transform.flip(gopnic.image, gopnic.rotate, False)
+                    gopnic.rotate = False
                     gopnic.rect.x += 50
                 elif hodyi[hod] + 1 == cur:
                     gopnic.image = pygame.transform.flip(gopnic.image, not gopnic.rotate, False)
+                    gopnic.rotate = True
                     gopnic.rect.x -= 50
                 hod += 1
                 time_elapsed_since_last_action = 0
@@ -472,16 +472,16 @@ while True:
                 cur = (gopnic.rect.x // 50) + (gopnic.rect.y // 50) * len(lavel[0]) + 1
                 # print(cur, (gopnic.rect.x // 50), (gopnic.rect.y // 50))
                 if hodyi[hod] + len(lavel[0]) == cur:
-                    gopnic.image = pygame.transform.flip(gopnic.image, not gopnic.rotate, False)
                     gopnic.rect.y -= 50
                 elif hodyi[hod] - len(lavel[0]) == cur:
-                    gopnic.image = pygame.transform.flip(gopnic.image, not gopnic.rotate, False)
                     gopnic.rect.y += 50
                 elif hodyi[hod] - 1 == cur:
-                    gopnic.image = pygame.transform.flip(gopnic.image, not gopnic.rotate, False)
+                    gopnic.image = pygame.transform.flip(gopnic.image, gopnic.rotate, False)
+                    gopnic.rotate = False
                     gopnic.rect.x += 50
                 elif hodyi[hod] + 1 == cur:
                     gopnic.image = pygame.transform.flip(gopnic.image, not gopnic.rotate, False)
+                    gopnic.rotate = True
                     gopnic.rect.x -= 50
                 hod += 1
                 time_elapsed_since_last_action = 0
@@ -600,16 +600,16 @@ while True:
                 cur = (gopnic.rect.x // 50) + (gopnic.rect.y // 50) * len(lavel[0]) + 1
                 # print(cur, (gopnic.rect.x // 50), (gopnic.rect.y // 50))
                 if hodyi[hod] + len(lavel[0]) == cur:
-                    gopnic.image = pygame.transform.flip(gopnic.image, not gopnic.rotate, False)
                     gopnic.rect.y -= 50
                 elif hodyi[hod] - len(lavel[0]) == cur:
-                    gopnic.image = pygame.transform.flip(gopnic.image, not gopnic.rotate, False)
                     gopnic.rect.y += 50
                 elif hodyi[hod] - 1 == cur:
-                    gopnic.image = pygame.transform.flip(gopnic.image, not gopnic.rotate, False)
+                    gopnic.image = pygame.transform.flip(gopnic.image, gopnic.rotate, False)
+                    gopnic.rotate = False
                     gopnic.rect.x += 50
                 elif hodyi[hod] + 1 == cur:
                     gopnic.image = pygame.transform.flip(gopnic.image, not gopnic.rotate, False)
+                    gopnic.rotate = True
                     gopnic.rect.x -= 50
                 hod += 1
                 time_elapsed_since_last_action = 0
